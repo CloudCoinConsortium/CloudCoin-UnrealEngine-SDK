@@ -132,7 +132,6 @@ void UCloudBankUtils::DepositStackTo(FString toPublicURL)
 	Request->SetContentAsString("stack=" + rawStackForDeposit);
 	SetHeaders(Request);
 	Request->ProcessRequest();
-
 }
 
 /**
@@ -302,26 +301,19 @@ void UCloudBankUtils::ReceiptFromCloudBankResponse(FHttpRequestPtr Request, FHtt
 	FFullReceipt ReceiptData;
 
 	// Converts the response into a USTRUCT
-	FJsonObjectConverter::JsonObjectStringToUStruct(Response->GetContentAsString(), &ReceiptData, 0, 0);
-
-	for (int i = 0; i < ReceiptData.receipt.Max(); i++)
+	if (FJsonObjectConverter::JsonObjectStringToUStruct(Response->GetContentAsString(), &ReceiptData, 0, 0))
 	{
-		if (ReceiptData.receipt[i].status == "authentic")
-			totalCoinsWithdrawn += GetDenomination(FCString::Atoi(*ReceiptData.receipt[i].sn));
+		for (int i = 0; i < ReceiptData.receipt.Num(); i++)
+		{
+			if (ReceiptData.receipt[i].Getstatus() == "authentic")
+				totalCoinsWithdrawn += GetDenomination(FCString::Atoi(*ReceiptData.receipt[i].Getsn()));
+		}
+
+		WithdrawStack(totalCoinsWithdrawn);
 	}
-
-	FString publicKey = keys->GetPublicKey();
-	FString privateKey = keys->GetPrivateKey();
-	FString service = "/service/withdraw_one_stack";
-	FString account = keys->GetAccount();
-
-	Http = &FHttpModule::Get();
-	TSharedRef<IHttpRequest> WithdrawRequest = Http->CreateRequest();
-	WithdrawRequest->OnProcessRequestComplete().BindUObject(this, &UCloudBankUtils::WithdrawResponse);
-	WithdrawRequest->SetURL(TEXT("https://" + publicKey + service + "?amount=" + FString::FromInt(totalCoinsWithdrawn) + "&pk=" + privateKey + "&account=" + account));
-	WithdrawRequest->SetVerb("GET");
-	SetHeaders(WithdrawRequest);
-	WithdrawRequest->ProcessRequest();
+	else
+		UE_LOG(LogTemp, Error, TEXT("Error!"));
+		
 }
 
 /**
@@ -334,14 +326,14 @@ UInterpretation* UCloudBankUtils::InterpretReceipt()
 	FString interpretation = "";
 	FFullReceipt ReceiptData;
 	FJsonObjectConverter::JsonObjectStringToUStruct(rawReceipt, &ReceiptData, 0, 0);
-	int32 totalNotes = FCString::Atoi(*ReceiptData.total_authentic) + FCString::Atoi(*ReceiptData.total_fracked);
+	int32 totalNotes = FCString::Atoi(*ReceiptData.Gettotal_authentic()) + FCString::Atoi(*ReceiptData.Gettotal_fracked());
 	int32 totalCoins = 0;
-	for (int i = 0; i < ReceiptData.receipt.Max(); i++)
+	for (int i = 0; i < ReceiptData.receipt.Num(); i++)
 	{
-		if (ReceiptData.receipt[i].status == "authentic")
-			totalCoins += GetDenomination(FCString::Atoi(*ReceiptData.receipt[i].sn));
+		if (ReceiptData.receipt[i].Getstatus() == "authentic")
+			totalCoins += GetDenomination(FCString::Atoi(*ReceiptData.receipt[i].Getsn()));
 	}
-	interpretation = "receipt number: " + ReceiptData.receipt_id + " total authentic notes: " + FString::FromInt(totalNotes) + " total authentic coins: " + FString::FromInt(totalCoins);
+	interpretation = "receipt number: " + ReceiptData.Getreceipt_id() + " total authentic notes: " + FString::FromInt(totalNotes) + " total authentic coins: " + FString::FromInt(totalCoins);
 	inter->interpretation = interpretation;
 	inter->receipt = ReceiptData;
 	inter->totalAuthenticCoins = totalCoins;
