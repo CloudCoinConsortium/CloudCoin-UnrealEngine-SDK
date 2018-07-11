@@ -1,9 +1,6 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
 #include "Receipt.generated.h"
 
 // Holds the elements of the receipt_details array
@@ -173,14 +170,4 @@ struct FFullReceipt
 		return receipt;
 	}
 
-};
-
-UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
-class CLOUDCOINTEST_API UReceipt : public UActorComponent
-{
-	GENERATED_BODY()
-
-public:
-	// Sets default values for this component's properties
-	UReceipt();
 };
