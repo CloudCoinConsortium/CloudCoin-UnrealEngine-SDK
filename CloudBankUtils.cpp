@@ -349,7 +349,7 @@ UInterpretation* UCloudBankUtils::InterpretReceipt()
  */
 void UCloudBankUtils::SaveStackToFile(FString path)
 {
-	FString filepath = path + GetStackName();
+	FString filepath = path + "\\" + GetStackName();
 	FFileHelper::SaveStringToFile(rawStackFromWithdrawal, *filepath);
 }
 
