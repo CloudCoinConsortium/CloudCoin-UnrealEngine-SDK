@@ -22,7 +22,7 @@ public:
 	// Sets default values for this component's properties
 	UBankTotal();
 	UFUNCTION(BlueprintCallable)
-		UBankTotal* SetBankTotal(int ones, int fives, int twentyFives, int hundreds, int twoHundredFifties);
+		void SetBankTotal(int ones, int fives, int twentyFives, int hundreds, int twoHundredFifties);
 
 	UFUNCTION(BlueprintCallable)
 		int GetOnes() const;
