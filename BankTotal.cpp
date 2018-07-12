@@ -13,15 +13,13 @@ UBankTotal::UBankTotal()
 	// ...
 }
 
-UBankTotal* UBankTotal::SetBankTotal(int ones, int fives, int twentyFives, int hundreds, int twoHundredFifties)
+void UBankTotal::SetBankTotal(int ones, int fives, int twentyFives, int hundreds, int twoHundredFifties)
 {
-	UBankTotal* bankTotal = NewObject<UBankTotal>();
-	bankTotal->SetOnes(ones);
-	bankTotal->SetFives(fives);
-	bankTotal->SetTwentyFives(twentyFives);
-	bankTotal->SetHundreds(hundreds);
-	bankTotal->SetTwoHundredFifties(twoHundredFifties);
-	return bankTotal;
+	this->SetOnes(ones);
+	this->SetFives(fives);
+	this->SetTwentyFives(twentyFives);
+	this->SetHundreds(hundreds);
+	this->SetTwoHundredFifties(twoHundredFifties);
 }
 
 int UBankTotal::GetOnes() const
@@ -73,4 +71,3 @@ void UBankTotal::SetTwoHundredFifties(const int &value)
 {
 	privateTwoHundredFifties = value;
 }
-
