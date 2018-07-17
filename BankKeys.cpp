@@ -1,4 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
+/**
+ * @file BankKeys.cpp
+ *
+ * @brief
+ *    Getter and setter function definitions for the keys of a CloudService
+ *    server.
+ */
 
 #include "BankKeys.h"
 
@@ -14,6 +21,9 @@ UBankKeys::UBankKeys()
 
 /**
 * @brief    Constructor for UBankKeys
+* @param    publicKey The CloudService server
+* @param    privateKey The Private Key for the CloudService server
+* @param    account The Account
 */
 void UBankKeys::SetBankKeys(const FString publicKey, const FString privateKey, const FString account)
 {
@@ -23,7 +33,7 @@ void UBankKeys::SetBankKeys(const FString publicKey, const FString privateKey, c
 }
 
 /**
-* @brief	 Getter function for Public Key
+* @brief     Getter function for Public Key
 * @return    publicKey
 */
 FString UBankKeys::GetPublicKey() const
