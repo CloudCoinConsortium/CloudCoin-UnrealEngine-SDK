@@ -1,4 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+/**
+ * @file CloudBankUtils.h
+ *
+ * @brief
+ *    Declaration of a class implementing functions needed to communicate with
+ *    a server that has CloudCoinConsortium's Cloudservice web API.
+ */
 
 #pragma once
 
@@ -88,4 +94,3 @@ public:
 		void TransferCloudCoins(FString toPublicKey, int32 coinsToSend);
 	void TransferCloudCoinsResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
 };
-

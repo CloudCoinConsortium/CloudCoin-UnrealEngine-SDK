@@ -1,4 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+/**
+ * @file Interpretation.h
+ *
+ * @brief
+ *    Declaration of a class used to parse information from a receipt.
+ */
 
 #pragma once
 
@@ -16,9 +21,12 @@ class CLOUDCOINTEST_API UInterpretation : public UActorComponent
 public:	
 	// Sets default values for this component's properties
 	UInterpretation();
-	
-	FFullReceipt receipt;
-	FString interpretation;
-	int32 totalAuthenticNotes;
-	int32 totalAuthenticCoins;
+	UPROPERTY(BlueprintReadOnly)
+		FFullReceipt receipt;
+	UPROPERTY(BlueprintReadOnly)
+		FString interpretation;
+	UPROPERTY(BlueprintReadOnly)
+		int32 totalAuthenticNotes;
+	UPROPERTY(BlueprintReadOnly)
+		int32 totalAuthenticCoins;
 };

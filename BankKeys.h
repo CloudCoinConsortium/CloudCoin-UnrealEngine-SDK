@@ -1,4 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+/**
+ * @file BankKeys.h
+ *
+ * @brief
+ *    Declaration of a class with the keys for a CloudService server.
+ */
 
 #pragma once
 

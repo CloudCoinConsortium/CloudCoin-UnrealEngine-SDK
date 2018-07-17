@@ -1,3 +1,12 @@
+/**
+ * @file Receipt.h Declaration of the FReceiptDetail and FFullReceipt USTRUCTs
+ *
+ * @brief
+ *    These USTRUCTs are used to hold the data received from a GetReceipt
+ *    response. FFullReceipt contains a TArray of FReceiptDetail as well as
+ *    the other values received from a GetReceipt response.
+ */
+
 #pragma once
 
 #include "CoreMinimal.h"
@@ -169,5 +178,4 @@ struct FFullReceipt
 	{
 		return receipt;
 	}
-
 };
