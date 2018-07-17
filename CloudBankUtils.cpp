@@ -1,7 +1,14 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+/**
+ * @file CloudBankUtils.cpp 
+ *
+ * @brief
+ *    The function definitions needed for an object to communicate with a
+ *    server that has CloudCoinConsortium's CloudService web API. A UCloudBankUtils
+ *    object needs to be initialized using the SetCloudBankUtils function in
+ *    order to initialize that object with the keys for a CloudService server.
+ */
 
 #include "CloudBankUtils.h"
-
 
 // Sets default values for this component's properties
 UCloudBankUtils::UCloudBankUtils()
@@ -12,7 +19,7 @@ UCloudBankUtils::UCloudBankUtils()
 }
 
 /**
- * @brief    CloudBankUtils Constructor
+ * @brief    Used to inizialize the values in a UCloudBankUtils object.
  */
 void UCloudBankUtils::SetCloudBankUtils(UBankKeys *startKeys)
 {
@@ -72,7 +79,6 @@ void UCloudBankUtils::ShowCoinsResponse(FHttpRequestPtr Request, FHttpResponsePt
 			hundredsInBank = JsonObject->GetIntegerField("hundreds");
 			twoHundredFiftiesInBank = JsonObject->GetIntegerField("twohundredfifties");
 			UE_LOG(LogTemp, Display, TEXT("%s"), *Response->GetContentAsString());
-//			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, Response->GetContentAsString());
 		}
 		else
 		{
@@ -115,7 +121,7 @@ void UCloudBankUtils::DepositStack()
 
 /**
 * @brief    Sends the CloudCoin in rawStackForDeposit to a CloudService server specified by toPublicURL
-* @oaran    toPublicURL The url of the CloudService server the CLoudCoins are being sent to. Do not include "https://"
+* @param    toPublicURL The url of the CloudService server the CloudCoins are being sent to. Do not include "https://"
 *
 * loadStackFromFile needs to be called first
 */
@@ -157,7 +163,6 @@ void UCloudBankUtils::DepositResponse(FHttpRequestPtr Request, FHttpResponsePtr 
 		FString receivedMessage = JsonObject->GetStringField("message");
 		receiptNumber = JsonObject->GetStringField("receipt");
 		UE_LOG(LogTemp, Display, TEXT("%s"), *receivedMessage);
-//		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, recievedMessage);
 	}
 	else
 		UE_LOG(LogTemp, Error, TEXT("Deserialization error!"));
@@ -195,7 +200,6 @@ void UCloudBankUtils::ReceiptResponse(FHttpRequestPtr Request, FHttpResponsePtr 
 	}
 
 	UE_LOG(LogTemp, Display, TEXT("%s"), *Response->GetContentAsString());
-//	GEngine->AddOnScreenDebugMessage(-1, 500.0f, FColor::Green, Response->GetContentAsString());
 
 	rawReceipt = Response->GetContentAsString();
 }
@@ -282,7 +286,7 @@ void UCloudBankUtils::GetReceiptFromCloudBank()
 }
 
 /**
- * @brief    Sets the amount withdrawn equal to totalCoinsWithdraw
+ * @brief    Sets the amount withdrawn equal to totalCoinsWithdraw and calls the WithdrawStack function
  */
 void UCloudBankUtils::ReceiptFromCloudBankResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
 {
@@ -293,14 +297,13 @@ void UCloudBankUtils::ReceiptFromCloudBankResponse(FHttpRequestPtr Request, FHtt
 	}
 
 	UE_LOG(LogTemp, Display, TEXT("%s"), *Response->GetContentAsString());
-//	GEngine->AddOnScreenDebugMessage(-1, 500.0f, FColor::Green, Response->GetContentAsString());
 
 	rawReceipt = Response->GetContentAsString();
 
-	// FReceipt is the USTRUCT containing the response attributes
+	// FFullReceipt is the USTRUCT containing the response attributes
 	FFullReceipt ReceiptData;
 
-	// Converts the response into a USTRUCT
+	// Converts the Response into an FFullReceipt USTRUCT
 	if (FJsonObjectConverter::JsonObjectStringToUStruct(Response->GetContentAsString(), &ReceiptData, 0, 0))
 	{
 		for (int i = 0; i < ReceiptData.receipt.Num(); i++)
@@ -313,12 +316,10 @@ void UCloudBankUtils::ReceiptFromCloudBankResponse(FHttpRequestPtr Request, FHtt
 	}
 	else
 		UE_LOG(LogTemp, Error, TEXT("Error!"));
-		
 }
 
 /**
- * @brief    Parses pertinent information from the receipt last gather by GetReceipt
- *			 and returns it in the form of a UInterpretation object.
+ * @brief    Parses pertinent information from the receipt last gathered by GetReceipt and returns it in the form of a UInterpretation object.
  */
 UInterpretation* UCloudBankUtils::InterpretReceipt()
 {
@@ -343,8 +344,7 @@ UInterpretation* UCloudBankUtils::InterpretReceipt()
 }
 
 /**
- * @brief    Writes a CloudCoin stack file for the CloudCoin retrieved the last call
- *           of either GetStackFromCloudBank or GetReceiptFromCloudBank.
+ * @brief    Writes a CloudCoin stack file for the CloudCoin retrieved the last call of either GetStackFromCloudBank or GetReceiptFromCloudBank.
  * @param    path The full file path where the new file will be written.
  */
 void UCloudBankUtils::SaveStackToFile(FString path)
@@ -360,36 +360,13 @@ FString UCloudBankUtils::GetStackName()
 {
 	if (receiptNumber.IsEmpty())
 	{
-		FDateTime currentDate = FDateTime::Now();
-		FString month = FString::FromInt(currentDate.GetMonth());
-		FString day = FString::FromInt(currentDate.GetDay());
-		FString year = FString::FromInt(currentDate.GetYear());
-		FString hour = FString::FromInt(currentDate.GetHour12());
-		FString minute = FString::FromInt(currentDate.GetMinute());
-		FString second = FString::FromInt(currentDate.GetSecond());
-		FString millisecond = FString::FromInt(currentDate.GetMillisecond());
-
-		if (FCString::Atoi(*month) < 10)
-			month = "0" + month;
-		if (FCString::Atoi(*day) < 10)
-			day = "0" + day;
-		if (FCString::Atoi(*hour) < 10)
-			hour = "0" + hour;
-		if (FCString::Atoi(*minute) < 10)
-			minute = "0" + minute;
-		if (FCString::Atoi(*second) < 10)
-			hour = "0" + second;
-		if (FCString::Atoi(*millisecond) < 10)
-			millisecond = "0" + millisecond;
-
-		FString tag = "Withdrawal" + month + day + year + hour + minute + second + millisecond;
-		return FString::FromInt(totalCoinsWithdrawn) + ".CloudCoin." + tag + ".stack";
+		return FString::FromInt(totalCoinsWithdrawn) + ".CloudCoin..stack";
 	}
 	return FString::FromInt(totalCoinsWithdrawn) + ".CloudCoin." + receiptNumber + ".stack";
 }
 
 /**
- * @brief    Calls WithdrawStack and DepositStack in order to transfer CloudCoins from on CloudService to another
+ * @brief    Calls WithdrawStack and DepositStack in order to transfer CloudCoins from one CloudService to another
  * @param    toPublicKey The public url of the CloudService that is receiving the CloudCoins
  * @param    coinsToSend The amount of CloudCoins to be transfered
  */
@@ -411,8 +388,7 @@ void UCloudBankUtils::TransferCloudCoins(FString toPublicKey, int32 coinsToSend)
 }
 
 /**
- * @brief    Saves the retrieved CloudCoin stack into rawStackFromWithdrawal which
- *           is then saved to rawStackForDeposit in order to deposit it
+ * @brief    Saves the retrieved CloudCoin stack into rawStackFromWithdrawal which is then saved to rawStackForDeposit in order to deposit it
  */
 void UCloudBankUtils::TransferCloudCoinsResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
 {
@@ -428,7 +404,10 @@ void UCloudBankUtils::TransferCloudCoinsResponse(FHttpRequestPtr Request, FHttpR
 	DepositStackTo(toPublicKey);
 }
 
-// Set the headers for the requests
+/**
+ * @brief    Sets the headers for the requests
+ * @param    Request The current request to be processed
+ */
 void UCloudBankUtils::SetHeaders(TSharedRef<IHttpRequest>& Request)
 {
 	Request->SetHeader(TEXT("User-Agent"), TEXT("X-UnrealEngine-Agent"));
