@@ -1,4 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+/**
+ * @file DepositResponse.h
+ *
+ * @brief
+ *    Declaration of a class holding the response attributes for a successful
+ *    call to DepositStack.
+ */
 
 #pragma once
 
@@ -11,6 +17,7 @@ UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class CLOUDCOINTEST_API UDepositResponse : public UActorComponent
 {
 	GENERATED_BODY()
+
 private:
 	FString bank_server;
 	FString time;
