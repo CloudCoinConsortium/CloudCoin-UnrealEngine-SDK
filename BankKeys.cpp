@@ -3,7 +3,9 @@
  *
  * @brief
  *    Getter and setter function definitions for the keys of a CloudService
- *    server.
+ *    server. A UBankKeys object needs to be initialized using the SetBankKeys
+ *    function in order to initialize that object with the keys for a
+ *    CloudService server.
  */
 
 #include "BankKeys.h"
